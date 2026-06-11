@@ -113,6 +113,26 @@
         input:checked + .slider:before {
             transform: translateX(26px);
         }
+
+        /* --- CSS ส่วนเครดิตผู้พัฒนาระบบที่เพิ่มเข้ามาใหม่ --- */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .footer .developer-title {
+            color: #00ffcc; /* สีเขียวมิ้นต์/นีออน */
+            text-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
+            font-weight: bold;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .footer .developer-info {
+            color: #8b949e;
+        }
     </style>
 </head>
 <body>
@@ -166,13 +186,22 @@
                 <span class="slider"></span>
             </label>
         </div>
+
+        <div class="footer">
+            <div class="developer-title">ผู้พัฒนาระบบ</div>
+            <div class="developer-info">
+                ครูวิทยากร วรรณา<br>
+                แผนกอิเล็กทรอนิกส์<br>
+                วิทยาลัยสารพัดช่างศรีสะเกษ
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // ⚠️ นำค่าจาก Firebase Project ของคุณมาใส่ตรงนี้....
+        // ⚠️ นำค่าจาก Firebase Project ของคุณมาใส่ตรงนี้
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -187,12 +216,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Path ใน Database ของเรา (ตั้งชื่อว่า SmartHome)
         const dbPath = 'SmartHome/'; 
 
-        // ฟังก์ชันส่งค่าไปยัง Firebase เมื่อผู้ใช้กดปุ่มบนเว็บ (ผูกไว้กับ window เพื่อให้ HTML เรียกใช้ได้)
         window.toggleDevice = function(channel, isChecked) {
-            // ส่งค่า 1 เมื่อเปิด (true) และ 0 เมื่อปิด (false)
             const valueToSend = isChecked ? 1 : 0; 
             set(ref(db, dbPath + channel), valueToSend)
                 .then(() => {
@@ -203,7 +229,6 @@
                 });
         };
 
-        // ฟังก์ชันรับค่าจาก Firebase แบบ Real-time เพื่ออัปเดตปุ่มบนหน้าเว็บให้ตรงกับ Database
         function listenToDatabase(channel, checkboxId, iconId) {
             const deviceRef = ref(db, dbPath + channel);
             onValue(deviceRef, (snapshot) => {
@@ -213,15 +238,14 @@
                 
                 if (data === 1) {
                     checkbox.checked = true;
-                    icon.style.color = "#00ffff"; // เปลี่ยนสีไอคอนเมื่อเปิด
+                    icon.style.color = "#00ffff"; 
                 } else {
                     checkbox.checked = false;
-                    icon.style.color = "#8b949e"; // คืนสีเดิมเมื่อปิด
+                    icon.style.color = "#8b949e"; 
                 }
             });
         }
 
-        // สั่งให้รับฟังการเปลี่ยนแปลงของทั้ง 4 ช่องเมื่อโหลดหน้าเว็บ
         listenToDatabase('CH1', 'ch1', 'icon-ch1');
         listenToDatabase('CH2', 'ch2', 'icon-ch2');
         listenToDatabase('CH3', 'ch3', 'icon-ch3');
@@ -229,4 +253,4 @@
 
     </script>
 </body>
-</html>  
+</html>
